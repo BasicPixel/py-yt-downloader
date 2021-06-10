@@ -56,4 +56,4 @@ try:
 except:
     print(f"could not download video")
 
-video.register_on_complete_callback(print(f'{link_type} download successful.'))
+video.register_on_complete_callback(input(f'{link_type} download successful. Press enter to exit.'))
