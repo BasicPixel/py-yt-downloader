@@ -12,19 +12,22 @@ dl_folder = getcwd()
 # PySimpleGUI Initialization
 sg.theme("DarkBlue") # sets theme
 
+# dictionary for common parameters across elements
+btn = {'size':(9, 1), 'button_color':('white','#2C445B')}
+
 layout = [ # sets elements of the layout
     [sg.Text("Enter the link to the youtube video / playlist: ")],
-    [sg.InputText(key='input', size=(100,1))],
-    [sg.Button('Ok'), sg.Button('Cancel')],
-    [sg.Text(key='data', size=(100, 5))],
+    [sg.InputText(key='input', size=(80,1))],
+    [sg.Button('Ok', **btn), sg.Button('Cancel', **btn)],
+    [sg.Text(key='data', size=(80, 6))],
     [sg.HorizontalSeparator()],
     [sg.Input(key='browse', enable_events=True, visible=False)],
-    [sg.Button('Download', disabled=True), sg.Input(dl_folder, key='PATH'), sg.FolderBrowse('Browse...')],
-    [sg.Text('', key='downloading', size=(100,1))]
+    [sg.Text('', key='downloading', size=(80,1))],
+    [sg.Button('Download', disabled=True, **btn), sg.Input(dl_folder, key='PATH', size=(58,1)), sg.FolderBrowse('Browse...',**btn)]
 ]
 
 # Windows Definition
-window = sg.Window('Python YouTube Downloader', layout, font=('Segoe UI', 11), element_padding=(5, 5))
+window = sg.Window('Python YouTube Downloader', layout, font=('Segoe UI', 11), element_padding=(5, 5), margins=(15,15), grab_anywhere=True)
 
 # Main event loop
 while True:
@@ -57,13 +60,13 @@ while True:
                 target = Playlist(link)
                 
                 # display data about playlist
-                data = f'Plalist title: {target.title}\nChannel name: {target.owner}\nPlaylist has {target.length} videos'
+                data = f'Plalist title: {target.title}\nChannel name: {target.owner}\nPlaylist has {target.length} videos\n\n'
                 window['data'].update(data + data_correct)
             else:
                 link_type = 'video'
                 target = YouTube(link)
                 
-                data = f'Video title: {target.title}\nVideo is {round(target.length / 60, 2)} minutes long\nVideo has {target.views} views'
+                data = f'Video title: {target.title}\nChannel name: {target.author}\nVideo length: {round(target.length / 60, 2)} minutes\nView count: {target.views}\n'
                 window['data'].update(data + data_correct)
 
             window['Download'].update(disabled=False)
