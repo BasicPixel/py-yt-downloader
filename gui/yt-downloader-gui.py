@@ -8,7 +8,6 @@ from os import getcwd
 
 # Destination folder
 dl_folder = getcwd()
-folder_msg = 'Files are downloaded to: ' + dl_folder
 
 # PySimpleGUI Initialization
 sg.theme("DarkBlue") # sets theme
@@ -19,7 +18,8 @@ layout = [ # sets elements of the layout
     [sg.Button('Ok'), sg.Button('Cancel')],
     [sg.Text(key='data', size=(100, 5))],
     [sg.HorizontalSeparator()],
-    [sg.Button('Download', disabled=True), sg.Text(folder_msg, key='folder')],
+    [sg.Input(key='browse', enable_events=True, visible=False)],
+    [sg.Button('Download', disabled=True), sg.Input(dl_folder, key='PATH'), sg.FolderBrowse('Browse...')],
     [sg.Text('', key='downloading', size=(100,1))]
 ]
 
@@ -30,6 +30,11 @@ window = sg.Window('Python YouTube Downloader', layout, font=('Segoe UI', 11), e
 while True:
     # listen for events
     event, values = window.read()
+
+    try:
+        dl_folder = values['PATH']
+    except:
+        window['downloading'].update('Could not find specified directory')
 
     # breaks loop if windows is closed or if cancel button is clicked
     if event == sg.WIN_CLOSED or event == 'Cancel':
@@ -52,7 +57,7 @@ while True:
                 target = Playlist(link)
                 
                 # display data about playlist
-                data = f'Plalist title: {target.title}\nPlaylist has {target.length} videos'
+                data = f'Plalist title: {target.title}\nChannel name: {target.owner}\nPlaylist has {target.length} videos'
                 window['data'].update(data + data_correct)
             else:
                 link_type = 'video'
@@ -70,21 +75,18 @@ while True:
     elif event == 'Download':
         try:
             if link_type == 'playlist':
-                # display 'downloading...' next to download button
-                window['downloading'].update(f'Downloading videos from playlist "{target.title}"...')
-                
                 # iterate through videos in playlist
                 for video in target.videos:
                     # find highest resolution stream + download it
                     video.streams.get_highest_resolution().download(dl_folder)
+
             else:
-                window['downloading'].update(f'Downloading video "{target.title}"...')
                 target.streams.get_highest_resolution().download(dl_folder)
 
             # Display 'download successful' upon completion
             target.register_on_complete_callback(window['downloading'].update(f'Download successful.'))
         except:
-            window['downloading'].update(f'Could not download video / playlist.')
+            window['downloading'].update('Could not download video / playlist.')
     
 # closes window when loop is broken
 window.close()
