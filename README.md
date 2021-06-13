@@ -1,16 +1,16 @@
 # py-yt-downloader
 
-a simple CLI / GUI Youtube video / playlist downloader, made using python
+a simple CLI / GUI / Telegram bot YouTube video / playlist downloader, made using python
 
 ---
 
-used pytube module for parsing Youtube data and downloading, and PySimpleGUI for the gui version.
+used pytube module for parsing Youtube data and downloading, PySimpleGUI for the gui version, python-telegram-bot for bot version.
 
 ## Dependancies
 
 ### pytube
 
-installed by running
+install by running
 
 ```
 pip install pytube
@@ -18,8 +18,16 @@ pip install pytube
 
 ### PySimpleGUI
 
-installed by running
+install by running
 
 ```
 pip install PySimpleGUI
+```
+
+### python-telegram-bot
+
+install by running
+
+```
+pip install python-telegram-bot
 ```
